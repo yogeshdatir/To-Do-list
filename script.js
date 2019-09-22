@@ -8,22 +8,51 @@ class Todo {
     }
 }
 
+// Store class: Handles storage
+
+class Store {
+// We will use localStorage to store the todo list. But localStorage can only store string, so we will stringify array of todo task objects and parse it while fetching them.
+
+    static getTodos() {
+        let todos
+        if(localStorage.getItem('todos') === null) {
+            todos = []
+        } else {
+            todos = JSON.parse(localStorage.getItem('todos'))
+        }
+        return todos
+    }
+
+    static addTodo(todo) {
+        const todos = Store.getTodos()
+        todos.push(todo)
+        localStorage.setItem('todos', JSON.stringify(todos))
+    }
+
+    static removeTodo(elementClicked) {
+        if(elementClicked.parentElement.classList.contains('close')) {
+            const row = elementClicked.parentElement.parentElement.parentElement.parentElement
+
+            const task = row.children[1].children[0].innerHTML
+
+            const todos = Store.getTodos()
+
+            todos.forEach((todo, i) => {
+                if(todo.task === task) {
+                    todos.splice(i, 1)
+                }
+            })
+
+            localStorage.setItem('todos', JSON.stringify(todos))
+        }
+    }
+}
+
 // UI class: Handles UI Tasks
 
 class UI {
     static displayTodo() {
-        const StoredTodos = [
-            {
-                task: "This is 1st Task todo.",
-                prio: 5,
-                isDone: false
-            },
-            {
-                task: "This is 2nd Task todo.",
-                prio: 3,
-                isDone: true
-            }
-        ]
+        const StoredTodos = Store.getTodos()
 
         const todos = StoredTodos
 
@@ -96,6 +125,9 @@ document.addEventListener('submit', e => {
         // Add todo to UI
         UI.addTodoToList(todo)
 
+        // Add todo to Store
+        Store.addTodo(todo)
+
         // Clear fields
         UI.clearFields()
     }
@@ -105,5 +137,10 @@ document.addEventListener('submit', e => {
 document.querySelector('#todo-list').addEventListener('click', e => {
     // Prevent actual submit
     e.preventDefault()
+
+    // Remove todo from UI
     UI.deleteTodo(e.target)
+
+    // Remove todo from Store
+    Store.removeTodo(e.target)
 })
