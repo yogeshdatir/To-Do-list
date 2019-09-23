@@ -13,6 +13,33 @@ h1 {
     font-size: 3em;
 }
 
-form {
+#todo-form {
     padding: 5vh 0;
+}
+
+.col-done-width {
+    width: 4vw;
+    text-align: center;
+}
+
+.col-done-width div {
+    margin-top: 3px;
+}
+
+.close {
+    margin-right: 2vw;
+    color: red !important;
+}
+
+.col-prio-width {
+    width: 3vw;
+    text-align: center;
+}
+
+th.col-task {
+    text-align: center;
+}
+
+.completed-todo {
+    text-decoration: line-through;
 }

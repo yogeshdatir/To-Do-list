@@ -1,7 +1,8 @@
 // Todo class: Represents a todo task
 
 class Todo {
-    constructor(task, prio, isDone) {
+    constructor(id, task, prio, isDone) {
+        this.id = id;
         this.task = task;
         this.prio = prio;
         this.isDone = isDone;
@@ -9,6 +10,9 @@ class Todo {
 }
 
 // Store class: Handles storage
+
+// variable to store unique auincrementing ID
+var globalID = 0
 
 class Store {
 // We will use localStorage to store the todo list. But localStorage can only store string, so we will stringify array of todo task objects and parse it while fetching them.
@@ -18,6 +22,7 @@ class Store {
         if(localStorage.getItem('todos') === null) {
             todos = []
         } else {
+            // array which is stored as string in localStorage needs to parsed into JSON format
             todos = JSON.parse(localStorage.getItem('todos'))
         }
         return todos
@@ -27,24 +32,52 @@ class Store {
         const todos = Store.getTodos()
         todos.push(todo)
         localStorage.setItem('todos', JSON.stringify(todos))
+
+        // to stop restart of globalID counter
+        if(localStorage.getItem('globalID'))
+            globalID = localStorage.getItem('globalID')
+
+        globalID++
+        localStorage.setItem('globalID', globalID)
     }
 
     static removeTodo(elementClicked) {
         if(elementClicked.parentElement.classList.contains('close')) {
-            const row = elementClicked.parentElement.parentElement.parentElement.parentElement
-
-            const task = row.children[1].children[0].innerHTML
+            // Used data attribute to get required data
+            const id = elementClicked.getAttribute('data-id')
 
             const todos = Store.getTodos()
 
             todos.forEach((todo, i) => {
-                if(todo.task === task) {
+                if (todo.id === id) {
                     todos.splice(i, 1)
                 }
             })
 
             localStorage.setItem('todos', JSON.stringify(todos))
         }
+    }
+
+    static completeTodo(elementClicked) {
+        const id = elementClicked.getAttribute('data-id')
+
+        const todos = Store.getTodos()
+
+        todos.forEach((todo, i) => {
+            if (todo.id === id) {
+                todo.isDone = !todo.isDone
+                if (todo.isDone) {
+                    document.querySelector(`#task-${todo.id}`).classList.add('completed-todo')
+                    document.querySelector(`#prio-${todo.id}`).classList.add('completed-todo')
+                } else {
+                    document.querySelector(`#task-${todo.id}`).classList.remove('completed-todo')
+                    document.querySelector(`#prio-${todo.id}`).classList.remove('completed-todo')
+                }
+            }
+        })
+
+        localStorage.setItem('todos', JSON.stringify(todos))
+
     }
 }
 
@@ -56,7 +89,7 @@ class UI {
 
         const todos = StoredTodos
 
-        todos.forEach( todo => UI.addTodoToList(todo))
+        todos.forEach(todo => UI.addTodoToList(todo))
     }
 
     static addTodoToList(todo) {
@@ -64,24 +97,26 @@ class UI {
 
         const row = document.createElement('tr')
 
-        const isChecked = todo.isDone ? 'checked' : '' 
+        row.setAttribute('id', `${todo.id}`)
+
+        const isChecked = todo.isDone ? 'checked' : ''
 
         row.innerHTML = `
-        <td>
+        <td class="col-done-width" id="check-${todo.id}">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="blankCheckbox" value="option1" ${isChecked}>
+                <input class="form-check-input" type="checkbox" id="task-checkbox-${todo.id}" ${isChecked} data-id="${todo.id}">
             </div>
         </td>
-        <td>
+        <td class="col-task" id="task-${todo.id}">
             <div>${todo.task}</div>
         </td>
-        <td>
+        <td id="prio-${todo.id}">
             <div>${todo.prio}</div>
         </td>
-        <td>
+        <td class="col-done-width" id="close-${todo.id}">
             <a href="#">
                 <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true" data-id="${todo.id}">&times;</span>
                 </button>
             </a>
         </td>
@@ -92,7 +127,7 @@ class UI {
 
     static clearFields() {
         document.querySelector('#task').value = ''
-        document.querySelector('#prio').value = ''        
+        document.querySelector('#prio').value = ''
     }
 
     static deleteTodo(elementClicked) {
@@ -116,11 +151,14 @@ document.addEventListener('submit', e => {
     const isDone = false
 
     // Validate todo
-    if(task === '') {
+    if (task === '') {
         alert('Add task...')
     } else {
+
+        const id = localStorage.getItem('globalID')
+
         // Instantiate a todo task
-        const todo = new Todo(task, prio, isDone)
+        const todo = new Todo(id, task, prio, isDone)
 
         // Add todo to UI
         UI.addTodoToList(todo)
@@ -135,12 +173,19 @@ document.addEventListener('submit', e => {
 
 // Event: Remove todo from the list
 document.querySelector('#todo-list').addEventListener('click', e => {
-    // Prevent actual submit
-    e.preventDefault()
 
-    // Remove todo from UI
-    UI.deleteTodo(e.target)
+    // Need normal checkbox behaviour untouched
+    if (e.target.type != 'checkbox') {
 
-    // Remove todo from Store
-    Store.removeTodo(e.target)
+        // Prevent actual submit
+        e.preventDefault()
+
+        // Remove todo from UI
+        UI.deleteTodo(e.target)
+
+        // Remove todo from Store
+        Store.removeTodo(e.target)
+    } else {
+        Store.completeTodo(e.target)
+    }
 })
