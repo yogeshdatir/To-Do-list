@@ -26,11 +26,6 @@ h1 {
     margin-top: 3px;
 }
 
-.close {
-    margin-right: 2vw;
-    color: red !important;
-}
-
 .col-prio-width {
     width: 3vw;
     text-align: center;
