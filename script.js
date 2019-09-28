@@ -52,6 +52,10 @@ class Store {
 
         globalID++
         localStorage.setItem('globalID', globalID)
+
+        document.querySelector('#alert-box-message').textContent = "Task Added!"
+        document.querySelector('.alert-box').classList.remove('alert-box-disappear')
+        window.setTimeout(() => document.querySelector('.alert-box').classList.add('alert-box-disappear'), 5000)
     }
 
     static removeTodo(elementClicked) {
@@ -68,6 +72,10 @@ class Store {
             })
 
             localStorage.setItem('todos', JSON.stringify(todos))
+
+            document.querySelector('#alert-box-message').textContent = "Task Removed!"
+            document.querySelector('.alert-box').classList.remove('alert-box-disappear')
+            window.setTimeout(() => document.querySelector('.alert-box').classList.add('alert-box-disappear'), 5000)
         }
     }
 
@@ -124,6 +132,10 @@ class Store {
 
             document.querySelector('button.save-button[data-id="' + id + '"]').style.display = 'none'
             document.querySelector('button.cancel-button[data-id="' + id + '"]').style.display = 'none'
+
+            document.querySelector('#alert-box-message').textContent = "Task Updated!"
+            document.querySelector('.alert-box').classList.remove('alert-box-disappear')
+            window.setTimeout(() => document.querySelector('.alert-box').classList.add('alert-box-disappear'), 5000)
         }
     }
 }
