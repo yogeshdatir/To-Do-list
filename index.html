@@ -11,7 +11,7 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
     integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <title>Document</title>
+  <title>To Do App</title>
 </head>
 
 <body>
@@ -29,15 +29,19 @@
       </div>
     </form>
     <table class="table" id="todo-list">
-      <tr>
-        <th class="col-done-width">Done?</th>
-        <th class="col-task">Task</th>
-        <th class="col-prio-width">Priority</th>
-        <th class="col-done-width">Delete?</th>
-      </tr>
+      <thead>
+        <tr>
+          <th class="col-done-width">Done?</th>
+          <th class="col-task">Task<i id="task-sort-icon" class="fa fa-sort"></i></th>
+          <th class="col-prio-width">Priority<i id="prio-sort-icon" class="fa fa-sort"></i></th>
+          <th class="col-done-width">Delete?</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
     <div id="alert-box" class="alert-box alert-box-disappear">
-      <i class="fa fa-check-circle" aria-hidden="true"></i><div id="alert-box-message">Deleted Successfully!</div>
+      <i class="fa fa-check-circle" aria-hidden="true"></i>
+      <div id="alert-box-message">Deleted Successfully!</div>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
