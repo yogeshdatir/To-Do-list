@@ -143,7 +143,7 @@ class Store {
     }
 
     static sortTasks(elementClicked) {
-        if (elementClicked.classList.contains('col-prio-width')) {
+        if (elementClicked.tagName === 'TH' && elementClicked.classList.contains('col-prio-width')) {
             document.querySelector('#task-sort-icon').classList = 'fa fa-sort'
             prioSort = (prioSort === 'asc' ? 'desc' : 'asc')
             let sortedTodos = Array.from(Store.getTodos()).sort((a, b) => prioSort === 'asc' ? a.prio - b.prio : b.prio - a.prio)
@@ -154,7 +154,7 @@ class Store {
                 document.querySelector('#prio-sort-icon').classList = 'fa fa-sort-down'
             else if(prioSort === 'desc')
                 document.querySelector('#prio-sort-icon').classList = 'fa fa-sort-up'
-        } else if (elementClicked.classList.contains('col-task')) {
+        } else if (elementClicked.tagName === 'TH' && elementClicked.classList.contains('col-task')) {
             document.querySelector('#prio-sort-icon').classList = 'fa fa-sort'
             taskSort = (taskSort === 'asc' ? 'desc' : 'asc')
             let sortedTodos = Array.from(Store.getTodos()).sort(
