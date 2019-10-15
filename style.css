@@ -4,9 +4,29 @@ body {
     overflow-x: hidden;
 }
 
+.dark-mode {
+    background-color: #202040 !important;
+    color: azure !important;
+}
+
 .header {
     margin-top: 5vh;
     border: 5px solid skyblue;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.margin-right-auto {
+  margin-right: auto;
+}
+
+.date {
+    margin-left: auto;
+    margin-right: 1vw;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
 h1 {
@@ -42,6 +62,11 @@ th.col-task {
     cursor: pointer;
 }
 
+th.col-mat-width {
+    width: 10vw;
+    text-align: center;
+}
+
 .completed-todo {
     text-decoration: line-through;
 }
@@ -68,5 +93,112 @@ th.col-task {
 
 .fa-check-circle {
     padding-right: 10px;
+    color: green;
+}
+
+.form-row-flex {
+    margin: 0.5em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#urgent, #important {
+    margin-right: 0.5em;
+}
+
+.submit-button-div {
+    padding-right: 0 !important;
+    padding-left: 25px !important;
+}
+
+.input-group {
+    width: 50% !important;
+}
+
+.matrix {
+    height: 45vh;
+    margin-bottom: 1%;
+    transition: all 1s ease;
+}
+
+.matrix-remove {
+    display: none;
+}
+
+.matrix-box {
+    height: 20vh;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    margin: 0 !important;
+}
+
+.envelope {
+    color: white;
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#ui {
+    background-color: red;
+}
+
+#nui {
+    background-color: orange;
+}
+
+#uni {
+    background-color: blue;
+}
+
+#nuni {
+    background-color: green;
+}
+
+.headers {
+    width: 45%;
+    text-align: center;
+    padding-left: 15%;
+}
+
+.vertical-headers {
+    width: 20%;
+    transform: rotate(90deg);
+    text-align: center;
+}
+
+#matrix-circle {
+    text-align: center;
+}
+
+.fa-circle {
+    font-size: 1.5em !important;
+}
+
+.ui-color {
+    color: red;
+}
+
+.nui-color {
+    color: orange;
+}
+
+.uni-color {
+    color: blue;
+}
+
+.nuni-color {
     color: green;
 }

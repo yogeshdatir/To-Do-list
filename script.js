@@ -1,11 +1,13 @@
 // Todo class: Represents a todo task
 
 class Todo {
-    constructor(id, task, prio, isDone) {
+    constructor(id, task, prio, isDone, isUrgent, isImportant) {
         this.id = id;
         this.task = task;
         this.prio = prio;
         this.isDone = isDone;
+        this.isUrgent = isUrgent;
+        this.isImportant = isImportant;
     }
 }
 
@@ -150,9 +152,9 @@ class Store {
             localStorage.setItem('todos', JSON.stringify(sortedTodos))
             document.querySelector("#todo-list tbody").innerHTML = ''
             UI.displayTodo()
-            if(prioSort === 'asc')
+            if (prioSort === 'asc')
                 document.querySelector('#prio-sort-icon').classList = 'fa fa-sort-down'
-            else if(prioSort === 'desc')
+            else if (prioSort === 'desc')
                 document.querySelector('#prio-sort-icon').classList = 'fa fa-sort-up'
         } else if (elementClicked.tagName === 'TH' && elementClicked.classList.contains('col-task')) {
             document.querySelector('#prio-sort-icon').classList = 'fa fa-sort'
@@ -175,9 +177,9 @@ class Store {
             localStorage.setItem('todos', JSON.stringify(sortedTodos))
             document.querySelector("#todo-list tbody").innerHTML = ''
             UI.displayTodo()
-            if(taskSort === 'asc')
+            if (taskSort === 'asc')
                 document.querySelector('#task-sort-icon').classList = 'fa fa-sort-down'
-            else if(taskSort === 'desc')
+            else if (taskSort === 'desc')
                 document.querySelector('#task-sort-icon').classList = 'fa fa-sort-up'
         }
     }
@@ -204,6 +206,8 @@ class UI {
         const isChecked = todo.isDone ? 'checked' : ''
         const classForCompletedTasks = todo.isDone ? ' completed-todo' : ''
 
+        const classForMatrix = todo.isUrgent ? todo.isImportant ? 'ui-color' : 'uni-color' : todo.isImportant ? 'nui-color' : 'nuni-color'
+
         row.innerHTML = `
         <td class="col-done-width" id="check-${todo.id}">
             <div class="form-check">
@@ -216,6 +220,7 @@ class UI {
         <td id="prio-${todo.id}" style="text-align:center;" class=${classForCompletedTasks}>
             <div id="prio-div-${todo.id}">${todo.prio}</div>
         </td>
+        <td id="matrix-circle" class=${classForMatrix}><i class="fa fa-circle" aria-hidden="true"></i></td>
         <td class="col-done-width" id="close-${todo.id}">
             <div class="btn-group pull-right" id="btn-group-${todo.id}">
                 <button type="button" class="edit-button" aria-label="Edit" data-id="${todo.id}">
@@ -240,6 +245,8 @@ class UI {
     static clearFields() {
         document.querySelector('#task').value = ''
         document.querySelector('#prio').value = ''
+        document.querySelector('#urgent').checked = false
+        document.querySelector('#important').checked = false
     }
 
     static deleteTodo(elementClicked) {
@@ -305,6 +312,67 @@ class UI {
     }
 }
 
+class Filter {
+    uiToggle = 0
+    nuiToggle = 0
+    uniToggle = 0
+    nuniToggle = 0
+
+    static removeAllFilters() {
+        let allMatrixBoxesSelector = 'td.ui-color, td.nui-color, td.uni-color, td.nuni-color'
+        let rowsToDisplay = document.querySelectorAll(allMatrixBoxesSelector)
+        rowsToDisplay.forEach(row => row.parentElement.style.display = 'table-row')
+    }
+
+    static filterList(selectorToHide, selectorToShow) {
+        let rowsToRemove = document.querySelectorAll(selectorToHide)
+        rowsToRemove.forEach(row => row.parentElement.style.display = 'none')
+        let rowsToDisplay = document.querySelectorAll(selectorToShow)
+        rowsToDisplay.forEach(row => row.parentElement.style.display = 'table-row')
+    }
+
+    static byMatrix(elementClicked) {
+
+        if (elementClicked.id === 'ui' || elementClicked.parentElement.id === 'ui' || elementClicked.parentElement.parentElement.id === 'ui') {
+            this.uiToggle = this.uiToggle ? 0 : 1
+            if (this.uiToggle) {
+                let nonUiTasksSelector = 'td.nui-color, td.uni-color, td.nuni-color'
+                let uiTasksSelector = 'td.ui-color'
+                this.filterList(nonUiTasksSelector, uiTasksSelector)
+            } else {
+                this.removeAllFilters()
+            }
+        } else if (elementClicked.id === 'nui' || elementClicked.parentElement.id === 'nui' || elementClicked.parentElement.parentElement.id === 'nui') {
+            this.nuiToggle = this.nuiToggle ? 0 : 1
+            if (this.nuiToggle) {
+                let nonNuiTasksSelector = 'td.ui-color, td.uni-color, td.nuni-color'
+                let nuiTasksSelector = 'td.nui-color'
+                this.filterList(nonNuiTasksSelector, nuiTasksSelector)
+            } else {
+                this.removeAllFilters()
+            }
+        } else if (elementClicked.id === 'uni' || elementClicked.parentElement.id === 'uni' || elementClicked.parentElement.parentElement.id === 'uni') {
+            this.uniToggle = this.uniToggle ? 0 : 1
+            if (this.uniToggle) {
+                let nonUniTasksSelector = 'td.ui-color, td.nui-color, td.nuni-color'
+                let uniTasksSelector = 'td.uni-color'
+                this.filterList(nonUniTasksSelector, uniTasksSelector)
+            } else {
+                this.removeAllFilters()
+            }
+        } else if (elementClicked.id === 'nuni' || elementClicked.parentElement.id === 'nuni' || elementClicked.parentElement.parentElement.id === 'nuni') {
+            this.nuniToggle = this.nuniToggle ? 0 : 1
+            if (this.nuniToggle) {
+                let nonNuniTasksSelector = 'td.ui-color, td.uni-color, td.nui-color'
+                let nuniTasksSelector = 'td.nuni-color'
+                this.filterList(nonNuniTasksSelector, nuniTasksSelector)
+            } else {
+                this.removeAllFilters()
+            }
+        }
+    }
+}
+
 // Event: Display todos
 document.addEventListener('DOMContentLoaded', UI.displayTodo())
 
@@ -317,6 +385,8 @@ document.addEventListener('submit', e => {
     const task = document.querySelector('#task').value
     const prio = document.querySelector('#prio').value
     const isDone = false
+    const isUrgent = document.querySelector('#urgent').checked
+    const isImportant = document.querySelector('#important').checked
 
     // Validate todo
     if (task === '') {
@@ -326,7 +396,7 @@ document.addEventListener('submit', e => {
         const id = localStorage.getItem('globalID')
 
         // Instantiate a todo task
-        const todo = new Todo(id, task, prio, isDone)
+        const todo = new Todo(id, task, prio, isDone, isUrgent, isImportant)
 
         // Add todo to UI
         UI.addTodoToList(todo)
@@ -369,4 +439,40 @@ document.querySelector('#todo-list').addEventListener('click', e => {
     } else {
         Store.completeTodo(e.target)
     }
+})
+
+document.querySelector('#task-matrix').addEventListener('click', e => {
+    Filter.byMatrix(e.target)
+})
+
+function showDate() {
+    n = new Date();
+    y = n.getFullYear();
+    m = n.getMonth() + 1;
+    d = n.getDate();
+    document.getElementById("date").innerHTML = d + "/" + m + "/" + y;
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    document.getElementById("day").innerHTML = days[n.getDay()]
+}
+showDate()
+
+function darkMode() {
+    document.querySelector('#darkmode').addEventListener('change', e => {
+        if(e.target.checked) {
+            document.querySelector('body').classList.add('dark-mode')
+            document.querySelector('#alert-box').classList.add('dark-mode')
+            document.querySelectorAll('tr').forEach(element => element.classList.add('dark-mode'))
+            document.querySelectorAll('input[type="text"]').forEach(element => element.classList.add('dark-mode'))
+        } else {
+            document.querySelector('body').classList.remove('dark-mode')
+            document.querySelector('#alert-box').classList.remove('dark-mode')
+            document.querySelectorAll('tr').forEach(element => element.classList.remove('dark-mode'))
+            document.querySelectorAll('input[type="text"]').forEach(element => element.classList.remove('dark-mode'))
+        }
+    })    
+}
+darkMode()
+
+document.querySelector('#filter-drawer-icon').addEventListener('click', e => {
+    document.querySelector('#task-matrix').classList.toggle('matrix-remove')
 })

@@ -17,23 +17,108 @@
 <body>
   <div class="container">
     <div class="header">
+      <div class="margin-right-auto">
+        <input type="checkbox" id="darkmode" value="darkmode">
+        <label for="darkmode">Dark Mode</label>
+      </div>
       <h1>To Do List</h1>
+      <div class="date">
+        <h7 id="date"></h7>
+        <h7 id="day"></h7>
+      </div>
     </div>
     <form id="todo-form">
       <div class="row">
-        <div class="col-md-8"><input class="form-control" id="task" type="text" name="task" placeholder="New Task" required>
+        <div class="col-md-10"><input class="form-control" id="task" type="text" name="task" placeholder="New Task"
+            required>
         </div>
         <div class="col-md-2"><input class="form-control" id="prio" type="text" name="prio" size="5"
             placeholder="Priority"></div>
-        <div class="col-md-2"><button class="btn btn-primary btn-block" type="submit">Add</div>
+
       </div>
+
+      <div class="form-row-flex">
+        <div class="col-md-3">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="urgent" value="option1">
+            <label class="form-check-label" for="urgent">Urgent?</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="important" value="option2">
+            <label class="form-check-label" for="important">Important?</label>
+          </div>
+        </div>
+        <div>
+          <i id="filter-drawer-icon" class="fa fa-sort-down"></i>
+        </div>
+        <div class="form-row-inline submit-button-div col-md-2"><button class="btn btn-primary btn-block"
+            type="submit">Add
+        </div>
+      </div>
+
     </form>
+
+    <div id="task-matrix" class="col-sm-6 matrix">
+      <div class="row">
+        <div class="headers">
+          <p>Important</p>
+        </div>
+        <div class="headers">
+          <p>Not Important</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="vertical-headers"><p>Urgent</p></div>
+        <div class="matrix-box">
+          <div id="ui" class="envelope">
+            <p>Urgent & Important</p>
+            <p><em>do it now</em></p>
+          </div>
+        </div>
+        <div class="matrix-box">
+          <div id="nui" class="envelope">
+            <p>Not Urgent & Important</p>
+            <p><em>decide when to do</em></p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="vertical-headers"><p>Not Urgent</p></div>
+        <div class="matrix-box">
+          <div id="uni" class="envelope">
+            <p>Urgent & Not Important</p>
+            <p><em>delegate</em></p>
+          </div>
+        </div>
+        <div class="matrix-box">
+          <div id="nuni" class="envelope">
+            <p>Not Urgent & Not Important</p>
+            <p><em>delete</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="filter">Filter</label>
+      </div>
+      <select class="custom-select" id="filter">
+        <option selected>Choose...</option>
+        <option value="1">Urgent & Important</option>
+        <option value="2">Not Urgent & Important</option>
+        <option value="3">Urgent & Not Important</option>
+        <option value="4">Not Urgent & Not Important</option>
+      </select>
+    </div> -->
+
     <table class="table" id="todo-list">
       <thead>
         <tr>
           <th class="col-done-width">Done?</th>
           <th class="col-task">Task<i id="task-sort-icon" class="fa fa-sort"></i></th>
           <th class="col-prio-width">Priority<i id="prio-sort-icon" class="fa fa-sort"></i></th>
+          <th class="col-mat-width">Matrix Color</th>
           <th class="col-done-width">Delete?</th>
         </tr>
       </thead>
