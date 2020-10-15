@@ -183,6 +183,24 @@ class Store {
                 document.querySelector('#task-sort-icon').classList = 'fa fa-sort-up'
         }
     }
+
+    static getDarkMode() {
+        const darkMode = localStorage.getItem('dark-mode')
+        return darkMode
+    }
+
+    static setDarkMode(value) {
+        localStorage.setItem('dark-mode', value)
+    }
+
+    static setTaskMatrixDisplay(value) {
+        console.log(value)
+        localStorage.setItem('task-matrix-display', value)
+    }
+
+    static getTaskMatrixDisplay() {
+        return localStorage.getItem('task-matrix-display')
+    }
 }
 
 // UI class: Handles UI Tasks
@@ -194,6 +212,49 @@ class UI {
         const todos = StoredTodos
 
         todos.forEach(todo => UI.addTodoToList(todo))
+    }
+
+    static setDarkModeFromState() {
+        const StoredDarkMode = Store.getDarkMode()
+        if(StoredDarkMode == 'true')
+            this.setDarkMode()
+        else
+            this.unsetDarkMode()
+    }
+
+    static toggleTaskMatrixDisplayFromState() {
+        this.toggleTaskMatrixDisplay(Store.getTaskMatrixDisplay())
+    }
+
+    static onLoadFunctionSet() {
+        this.displayTodo()
+        this.setDarkModeFromState()
+        this.toggleTaskMatrixDisplayFromState()
+    }
+
+    static setDarkMode() {
+        document.querySelector('body').classList.add('dark-mode')
+        document.querySelector('#alert-box').classList.add('dark-mode')
+        document.querySelectorAll('tr').forEach(element => element.classList.add('dark-mode'))
+        document.querySelectorAll('input[type="text"]').forEach(element => element.classList.add('dark-mode'))
+    }
+
+    static unsetDarkMode() {
+        document.querySelector('body').classList.remove('dark-mode')
+        document.querySelector('#alert-box').classList.remove('dark-mode')
+        document.querySelectorAll('tr').forEach(element => element.classList.remove('dark-mode'))
+        document.querySelectorAll('input[type="text"]').forEach(element => element.classList.remove('dark-mode'))
+    }
+
+    static toggleTaskMatrixDisplay(value) {
+        if(value == 0) {
+            document.querySelector('#filter-drawer-icon').classList.replace('fa-sort-down', 'fa-sort-up')
+            return document.querySelector('#task-matrix').classList.remove('matrix-remove')
+        }
+        else {
+            document.querySelector('#filter-drawer-icon').classList.replace('fa-sort-up', 'fa-sort-down')
+            return document.querySelector('#task-matrix').classList.add('matrix-remove')
+        }
     }
 
     static addTodoToList(todo) {
@@ -240,6 +301,7 @@ class UI {
         `
 
         list.appendChild(row)
+        this.setDarkModeFromState()
     }
 
     static clearFields() {
@@ -374,7 +436,7 @@ class Filter {
 }
 
 // Event: Display todos
-document.addEventListener('DOMContentLoaded', UI.displayTodo())
+document.addEventListener('DOMContentLoaded', UI.onLoadFunctionSet())
 
 // Event: Add todo to the list
 document.addEventListener('submit', e => {
@@ -459,20 +521,22 @@ showDate()
 function darkMode() {
     document.querySelector('#darkmode').addEventListener('change', e => {
         if(e.target.checked) {
-            document.querySelector('body').classList.add('dark-mode')
-            document.querySelector('#alert-box').classList.add('dark-mode')
-            document.querySelectorAll('tr').forEach(element => element.classList.add('dark-mode'))
-            document.querySelectorAll('input[type="text"]').forEach(element => element.classList.add('dark-mode'))
+            UI.setDarkMode()
+            Store.setDarkMode(true)
         } else {
-            document.querySelector('body').classList.remove('dark-mode')
-            document.querySelector('#alert-box').classList.remove('dark-mode')
-            document.querySelectorAll('tr').forEach(element => element.classList.remove('dark-mode'))
-            document.querySelectorAll('input[type="text"]').forEach(element => element.classList.remove('dark-mode'))
+            UI.unsetDarkMode()
+            Store.setDarkMode(false)
         }
     })    
 }
 darkMode()
 
-document.querySelector('#filter-drawer-icon').addEventListener('click', e => {
-    document.querySelector('#task-matrix').classList.toggle('matrix-remove')
-})
+function displayMatrixInteraction() {
+    document.querySelector('#filter-drawer-icon').addEventListener('click', e => {
+        let TaskMatrixDisplay = Store.getTaskMatrixDisplay()
+        Store.setTaskMatrixDisplay(TaskMatrixDisplay == 1 ? 0 : 1)
+        UI.toggleTaskMatrixDisplay(TaskMatrixDisplay == 1 ? 0 : 1)
+        console.log((TaskMatrixDisplay))
+    })
+}
+displayMatrixInteraction()
